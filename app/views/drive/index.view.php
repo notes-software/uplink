@@ -17,58 +17,12 @@ use App\Core\App; ?>
 
             <div class="col-sm-3 mb-4">
                 <div class="card">
-                    <div class="card-body d-flex flex-row align-items-center" style="padding: 14px;">
+                    <div class="card-body d-flex flex-row align-items-center text-muted" style="padding: 14px;">
                         <i class="fas fa-folder mr-2"></i>
                         <p class="card-text">folder 1</p>
                     </div>
                 </div>
             </div>
-
-            <div class="col-sm-3 mb-4">
-                <div class="card">
-                    <div class="card-body d-flex flex-row align-items-center" style="padding: 14px;">
-                        <i class="fas fa-folder mr-2"></i>
-                        <p class="card-text">folder 1</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-3 mb-4">
-                <div class="card">
-                    <div class="card-body d-flex flex-row align-items-center" style="padding: 14px;">
-                        <i class="fas fa-folder mr-2"></i>
-                        <p class="card-text">folder 1</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-3 mb-4">
-                <div class="card">
-                    <div class="card-body d-flex flex-row align-items-center" style="padding: 14px;">
-                        <i class="fas fa-folder mr-2"></i>
-                        <p class="card-text">folder 1</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-3 mb-4">
-                <div class="card">
-                    <div class="card-body d-flex flex-row align-items-center" style="padding: 14px;">
-                        <i class="fas fa-folder mr-2"></i>
-                        <p class="card-text">folder 1</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-3 mb-4">
-                <div class="card">
-                    <div class="card-body d-flex flex-row align-items-center" style="padding: 14px;">
-                        <i class="fas fa-folder mr-2"></i>
-                        <p class="card-text">folder 1</p>
-                    </div>
-                </div>
-            </div>
-
 
         </div>
     </div>
