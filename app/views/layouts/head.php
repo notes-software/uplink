@@ -15,6 +15,7 @@ use App\Core\Auth;
 	</title>
 
 	<link rel="stylesheet" href="<?= public_url('/assets/sprnva/css/bootstrap.min.css') ?>">
+	<link rel="stylesheet" href="<?= public_url('/assets/sprnva/fontawesome/css/all.min.css') ?>">
 
 	<style>
 		body {
@@ -26,6 +27,7 @@ use App\Core\Auth;
 	<script src="<?= public_url('/assets/sprnva/js/jquery-3.6.0.min.js') ?>"></script>
 	<script src="<?= public_url('/assets/sprnva/js/popper.min.js') ?>"></script>
 	<script src="<?= public_url('/assets/sprnva/js/bootstrap.min.js') ?>"></script>
+	<script src="<?= public_url('/assets/sprnva/fontawesome/js/all.min.js') ?>"></script>
 
 	<?php require_once __DIR__ . '/filepond.php'; ?>
 
@@ -65,6 +67,12 @@ use App\Core\Auth;
 					<li class="nav-item">
 						<a class="nav-link" href="<?= route('/home') ?>">Home</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<?= route('/drive') ?>">Drive</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="<?= route('/notes') ?>">Notes</a>
+					</li>
 				</ul>
 
 				<ul class="navbar-nav flex-row ml-md-auto">
@@ -95,4 +103,4 @@ use App\Core\Auth;
 			</div>
 		</div>
 	</nav>
-	<div class="container mt-5">
+	<div class="container mt-3">
