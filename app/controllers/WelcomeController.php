@@ -9,7 +9,8 @@ class WelcomeController
     public function home()
     {
         $pageTitle = "Home";
+        $crumbs = 'Home';
 
-        return view('/home', compact('pageTitle'));
+        return view('/home', compact('pageTitle', 'crumbs'));
     }
 }

@@ -13,10 +13,11 @@ class ProfileController
     public function index()
     {
         $pageTitle = "Profile";
+        $crumbs = 'Drive';
         $user_id = Auth::user('id');
         $user_data = App::get('database')->select("*", 'users', "id='$user_id'");
 
-        return view('/auth/profile', compact('user_data', 'pageTitle'));
+        return view('/auth/profile', compact('user_data', 'pageTitle', 'crumbs'));
     }
 
     public function update()

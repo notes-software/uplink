@@ -277,7 +277,7 @@ class Request
 	 * @param  bool  $lock
 	 * @return int|bool
 	 */
-	public static function storeAs($file_tmp, $temp_dir, $type, $folder, $filename)
+	public static function storeAs($file_tmp, $temp_dir, $type, $filename, $folder = '')
 	{
 		Filesystem::noMemoryLimit();
 
@@ -286,10 +286,12 @@ class Request
 
 		$tmp_folder = $temp_dir;
 
-		static::ensureUploadsAndTmpFolderExist();
-		Filesystem::makeDirectory($tmp_folder . $folder);
+		if ($folder != '') {
+			static::ensureUploadsAndTmpFolderExist();
+			Filesystem::makeDirectory($tmp_folder . $folder);
+		}
 
-		$path = $tmp_folder . $folder . '/' . $filename;
+		$path = ($folder != '') ? $tmp_folder . $folder . '/' . $filename : $tmp_folder . $filename;
 
 		list($type, $imagedata) = explode(';', $imagedata);
 		list(, $imagedata) = explode(',', $imagedata);

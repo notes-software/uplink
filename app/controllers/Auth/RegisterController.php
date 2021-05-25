@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\App;
 use App\Core\Auth;
 use App\Core\Request;
+use App\Core\Filesystem;
 
 class RegisterController
 {
@@ -35,7 +36,14 @@ class RegisterController
             'created_at' => date("Y-m-d H:i:s")
         ];
 
-        App::get('database')->insert("users", $register_user);
+        $lastID = App::get('database')->insert("users", $register_user . 'Y');
+
+        $dir = "public/assets/drive";
+        Filesystem::makeDirectory($dir);
+
+        $dir = "public/assets/drive/{$lastID}";
+        Filesystem::makeDirectory($dir);
+
         redirect('/register', ["Success register", "success"]);
     }
 }

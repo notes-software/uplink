@@ -98,7 +98,7 @@ use App\Core\Auth;
 		<div class="container">
 			<div class="navbar-nav">
 				<div class="nav-item">
-					<div class="nav-link active" style="font-size: 18px;font-weight: 500;"><?= ucfirst($pageTitle); ?></div>
+					<div class="nav-link active" style="font-size: 18px;font-weight: 500;"><?= $crumbs; ?></div>
 				</div>
 			</div>
 		</div>

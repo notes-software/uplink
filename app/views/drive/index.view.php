@@ -12,20 +12,9 @@ use App\Core\Request; ?>
         display: none;
     }
 
-    .file-bin-hide {
-        display: none !important;
-    }
-
-    .file-bin-show {
-        display: block !important;
-    }
-
-    .folder-bin-show {
-        display: block !important;
-    }
-
-    .folder-bin-hide {
-        display: none !important;
+    a {
+        text-decoration: none !important;
+        color: #6c757d !important;
     }
 </style>
 
@@ -36,55 +25,81 @@ use App\Core\Request; ?>
 
     <div class="col-12" style="min-height: 100px;">
         <div class="row">
-            <div class="col-12 d-flex flex-row justify-content-between">
-                <span class="text-muted">Folders</span>
-                <span class="text-muted" style="font-size: 14px;padding: 5; background-color: #ddd;border-radius: 3px;" onclick="makeModal()"><i class="fas fa-plus"></i></span>
-            </div>
 
-            <div class="col-12 mt-3">
-                <div class="row">
+            <span class="text-muted" style="font-size: 19px;padding: 19px;background-color: #ddd;border-radius: 50%;position: fixed;bottom: 7%;right: 10%;z-index: 1000;" onclick="makeModal()"><i class="fas fa-plus"></i></span>
 
-                    <div class="col-sm-3 mb-4 ch-padd-hover" style="overflow: hidden;">
-                        <div class="card">
-                            <div class="card-body d-flex flex-row align-items-center justify-content-between text-muted" style="padding: 14px;">
-                                <div class="d-flex flex-row align-items-center">
-                                    <i class="fas fa-folder mr-2"></i>
-                                    <p class="card-text" style="width: 180px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">folder 1 asdasdajhkjdhakjsdkjahskjdka</p>
-                                </div>
-                                <div>
-                                    <i class="fas fa-ellipsis-v show-onhover"></i>
+            <?php
+            if (count($folders) > 0) {
+            ?>
+                <div class="col-12 d-flex flex-row justify-content-between">
+                    <span class="text-muted">Folders</span>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <div class="row">
+
+                        <?php
+                        foreach ($folders as $folder) {
+                        ?>
+                            <div class="col-sm-3 mb-4 ch-padd-hover" style="overflow: hidden;">
+                                <div class="card">
+                                    <div class="card-body d-flex flex-row align-items-center justify-content-between text-muted" style="padding: 14px;">
+                                        <a href="<?= route("/drive/folder", $folder->folder_code) ?>">
+                                            <div class="d-flex flex-row align-items-center">
+
+                                                <i class="fas fa-folder mr-2"></i>
+                                                <p class="card-text" style="width: 180px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><?= $folder->folder_name ?></p>
+
+                                            </div>
+                                        </a>
+                                        <div>
+                                            <i class="fas fa-ellipsis-v show-onhover"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        <?php } ?>
 
+                    </div>
                 </div>
-            </div>
+            <?php } ?>
         </div>
     </div>
 
-    <div class="col-12">
-        <div class="row">
-            <div class="col-12 d-flex flex-row justify-content-between">
-                <span class="text-muted">Files</span>
-            </div>
+    <?php
+    if (count($files) > 0) {
+    ?>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 d-flex flex-row justify-content-between">
+                    <span class="text-muted">Files</span>
+                </div>
 
-            <div class="col-12 mt-3">
-                <div class="row">
+                <div class="col-12 mt-3">
+                    <div class="row">
 
-                    <div class="col-sm-3 mb-4">
-                        <div class="card">
-                            <div class="card-body d-flex flex-row align-items-center text-muted" style="padding: 14px;">
-                                <i class="fas fa-folder mr-2"></i>
-                                <p class="card-text">folder 1</p>
+                        <?php
+                        foreach ($files as $file) {
+                        ?>
+                            <div class="col-sm-3 mb-4 ch-padd-hover" style="overflow: hidden;">
+                                <div class="card">
+                                    <div class="card-body d-flex flex-row align-items-center justify-content-between text-muted" style="padding: 14px;">
+                                        <div class="d-flex flex-row align-items-center">
+                                            <p class="card-text" style="width: 190px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><?= $file->slug ?></p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-ellipsis-v show-onhover"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        <?php } ?>
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php } ?>
 
 </div>
 
@@ -92,68 +107,18 @@ use App\Core\Request; ?>
 
 <script>
     $(document).ready(function() {
-        $("#make_option").val("");
-        $("#folder_bin").css({
-            "cssText": "display: none !important"
-        });
-        $("#file_bin").css({
-            "cssText": "display: none !important"
-        });
+        make_modal_init();
     });
 
     function makeModal() {
 
-        $("#make_option").val("");
-
-        $("#folder_bin").css({
-            "cssText": "display: none !important"
-        });
-        $("#file_bin").css({
-            "cssText": "display: none !important"
-        });
+        make_modal_init();
 
         $('#make_modal').modal({
             show: true,
             backdrop: 'static',
             keyboard: false
         });
-    }
-
-    function selectOption() {
-        var optionSelected = $("#make_option").val();
-        if (optionSelected == 1) {
-            $("#folder_bin").css({
-                "cssText": "display: block !important"
-            });
-            $("#file_bin").css({
-                "cssText": "display: none !important"
-            });
-        } else {
-            $("#folder_bin").css({
-                "cssText": "display: none !important"
-            });
-            $("#file_bin").css({
-                "cssText": "display: block !important"
-            });
-
-            FilePond.setOptions({
-                server: {
-                    url: base_url + '/file/upload',
-                    headers: {
-                        'X-CSRF-TOKEN': '<?= Request::csrf_token() ?>'
-                    }
-                }
-            });
-
-            FilePond.registerPlugin(
-                FilePondPluginFileEncode,
-                FilePondPluginFileValidateSize,
-                FilePondPluginImageExifOrientation,
-                FilePondPluginImagePreview
-            );
-
-            FilePond.create(document.querySelector('input[type="file"]'));
-        }
     }
 
     function close_make_modal() {
