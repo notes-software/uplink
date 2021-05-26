@@ -36,13 +36,17 @@ class RegisterController
             'created_at' => date("Y-m-d H:i:s")
         ];
 
-        $lastID = App::get('database')->insert("users", $register_user . 'Y');
+        $lastID = App::get('database')->insert("users", $register_user, 'Y');
 
-        $dir = "public/assets/drive";
-        Filesystem::makeDirectory($dir);
+        $driveFolder = "public/assets/drive";
+        if (!Filesystem::exists($driveFolder)) {
+            Filesystem::makeDirectory($driveFolder);
+        }
 
-        $dir = "public/assets/drive/{$lastID}";
-        Filesystem::makeDirectory($dir);
+        $userFolder = "public/assets/drive/{$lastID}";
+        if (!Filesystem::exists($userFolder)) {
+            Filesystem::makeDirectory($userFolder);
+        }
 
         redirect('/register', ["Success register", "success"]);
     }

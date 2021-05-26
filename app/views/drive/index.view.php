@@ -16,6 +16,10 @@ use App\Core\Request; ?>
         text-decoration: none !important;
         color: #6c757d !important;
     }
+
+    .card-text-small {
+        font-size: 12px;
+    }
 </style>
 
 <div class="row pb-3">
@@ -23,10 +27,10 @@ use App\Core\Request; ?>
         <?= msg('RESPONSE_MSG'); ?>
     </div>
 
-    <div class="col-12" style="min-height: 100px;">
+    <div class="col-12">
         <div class="row">
 
-            <span class="text-muted" style="font-size: 19px;padding: 19px;background-color: #ddd;border-radius: 50%;position: fixed;bottom: 7%;right: 10%;z-index: 1000;" onclick="makeModal()"><i class="fas fa-plus"></i></span>
+            <span class="text-muted" style="font-size: 19px;padding: 19px;background-color: #1e7e34;color: #fff !important;border-radius: 50%;position: fixed;bottom: 7%;right: 10%;z-index: 1000;box-shadow: 0 2px 5px 0 rgb(0 0 0);" onclick="makeModal()"><i class="fas fa-plus"></i></span>
 
             <?php
             if (count($folders) > 0) {
@@ -53,7 +57,9 @@ use App\Core\Request; ?>
                                             </div>
                                         </a>
                                         <div>
-                                            <i class="fas fa-ellipsis-v show-onhover"></i>
+                                            <a href="">
+                                                <i class="fas fa-ellipsis-v show-onhover"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -76,26 +82,36 @@ use App\Core\Request; ?>
                 </div>
 
                 <div class="col-12 mt-3">
-                    <div class="row">
 
+                    <div class="card-columns">
                         <?php
                         foreach ($files as $file) {
+                            $fileSlug = explode('/', $file->slug);
+                            $fileName = end($fileSlug);
+                            $iconSize = "width: " . $file->iconsize . ";";
+
+                            if (!checkIfImage($file->filetype)) {
+                                $isNotImg = "display: inline-flex;flex-direction: row;word-break: break-all;";
+                            } else {
+                                $isNotImg = "";
+                            }
                         ?>
-                            <div class="col-sm-3 mb-4 ch-padd-hover" style="overflow: hidden;">
-                                <div class="card">
-                                    <div class="card-body d-flex flex-row align-items-center justify-content-between text-muted" style="padding: 14px;">
-                                        <div class="d-flex flex-row align-items-center">
-                                            <p class="card-text" style="width: 190px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><?= $file->slug ?></p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-ellipsis-v show-onhover"></i>
-                                        </div>
-                                    </div>
+
+
+                            <div class="card" style="border: 1px solid rgb(0 0 0 / 26%);overflow: hidden;<?= $isNotImg ?>">
+                                <img class="card-img-top" style="<?= $iconSize ?>" src="<?= getImageView($file->filetype, $file->slug) ?>" alt="Card image cap">
+                                <div class="card-body">
+                                    <p class="card-text card-text-small d-flex flex-column">
+                                        <?= $fileName ?>
+                                        <small class="text-muted"><?= $file->filesize . " MB" ?></small>
+                                    </p>
                                 </div>
                             </div>
-                        <?php } ?>
 
+
+                        <?php } ?>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -18,6 +18,7 @@ $create_user_folder = [
 		"folder_code" => "text NOT NULL",
 		"user_id" => "int(11) NOT NULL",
 		"folder_name" => "varchar(255) NOT NULL",
+		"parent_folder" => "int(11) NOT NULL",
 		"updated_at" => "datetime DEFAULT NULL",
 		"created_at" => "datetime DEFAULT NULL"
 	],

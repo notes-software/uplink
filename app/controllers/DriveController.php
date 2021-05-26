@@ -55,11 +55,22 @@ class DriveController
 
         if (Request::hasFile('upload_file')) {
             $file_tmp = $_FILES['upload_file']['tmp_name'];
-            $filename = $_FILES['upload_file']['name'];
+            $filename = $curr_folder . "_" . str_replace(array(' ', ',', '-'), '_', $_FILES['upload_file']['name']);
+            $fileSize = $_FILES['upload_file']['size'] / 1000000;
+            $file_type = explode('.', $_FILES['upload_file']['name']);
+            $fileType = strtoupper(end($file_type));
+
+            $image_icons_array = array("JPEG", "JPG", "EXIF", "TIFF", "GIF", "BMP", "PNG", "SVG", "ICO", "PPM", "PGM", "PNM");
+            if (in_array($fileType, $image_icons_array)) {
+                $previewSize = '100%';
+            } else {
+                $previewSize = '25%';
+            }
+
             $folder = uniqid() . '-' . date('Ymdhis');
             $temp_dir = "public/assets/drive/{$user_id}/";
 
-            $this->saveFilesInDb($user_id, $curr_folder, $temp_dir . $filename);
+            $this->saveFilesInDb($user_id, $curr_folder, $temp_dir . $filename, $fileSize, $fileType, $previewSize);
 
             Request::storeAs($file_tmp, $temp_dir, $_FILES['upload_file']['type'], $filename);
 
@@ -69,7 +80,7 @@ class DriveController
         echo '';
     }
 
-    public function saveFilesInDb($user_id, $folder_id, $path)
+    public function saveFilesInDb($user_id, $folder_id, $path, $fileSize, $fileType, $previewSize)
     {
         $fileCode = randChar(3) . date('ymdhis');
 
@@ -78,6 +89,9 @@ class DriveController
             "user_id" => $user_id,
             "folder_id" => $folder_id,
             "slug" => $path,
+            "filetype" => $fileType,
+            "filesize" => $fileSize,
+            "iconsize" => $previewSize,
             "created_at" => date('Y-m-d h:i:s'),
             "updated_at" => date('Y-m-d h:i:s')
         ];
