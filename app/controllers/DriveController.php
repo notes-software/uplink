@@ -120,4 +120,52 @@ class DriveController
 
         return view('/drive/index', compact('pageTitle', 'folders', 'files', 'crumbs', 'folderCode'));
     }
+
+    public function renameFolder()
+    {
+        $user_id = Auth::user('id');
+        $request = Request::validate('/drive', [
+            "rename_folder_input" => "required"
+        ]);
+
+        $form_data = [
+            "folder_name" => $request['folder_name'],
+            "updated_at" => date('Y-m-d h:i:s')
+        ];
+
+        $response = App::get('database')->update("user_folder", $form_data, "folder_code = '$request[current_folder_code]' AND user_id = '$user_id'");
+
+        echo $response;
+    }
+
+    public function deleteFolder()
+    {
+        $user_id = Auth::user('id');
+        $request = Request::validate('/drive');
+
+        $folder = App::get('database')->select("*", "user_folder", "folder_code = '$request[current_folder_code]' AND user_id = '$user_id'");
+
+        $this->deleteFolders($user_id, $folder['id']);
+        echo 1;
+    }
+
+    public function deleteFolders($user_id, $folder_id)
+    {
+        $file = new Filesystem;
+
+        $users_files = App::get('database')->selectLoop("*", "user_files", "folder_id = '$folder_id' AND user_id = '$user_id'");
+        foreach ($users_files as $files) {
+            if (Filesystem::exists($files->slug)) {
+                $file->delete($files->slug);
+                App::get('database')->delete("user_files", "id = '$files->id' AND user_id = '$user_id'");
+            }
+        }
+
+        App::get('database')->delete("user_folder", "id = '$folder_id' AND user_id = '$user_id'");
+
+        $sub_folder_list = App::get('database')->selectLoop("*", "user_folder", "parent_folder = '$folder_id' AND user_id = '$user_id'");
+        foreach ($sub_folder_list as $sub_folder) {
+            $this->deleteFolders($user_id, $sub_folder->id);
+        }
+    }
 }

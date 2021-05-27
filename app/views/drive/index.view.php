@@ -57,9 +57,7 @@ use App\Core\Request; ?>
                                             </div>
                                         </a>
                                         <div>
-                                            <a href="">
-                                                <i class="fas fa-ellipsis-v show-onhover"></i>
-                                            </a>
+                                            <i class="fas fa-ellipsis-v show-onhover" onclick="openFolderOptionsModal('<?= $folder->folder_code ?>', '<?= $folder->folder_name ?>')"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -120,6 +118,7 @@ use App\Core\Request; ?>
 </div>
 
 <?php require __DIR__ . '/make_modal.view.php'; ?>
+<?php require __DIR__ . '/folder_option_modal.view.php'; ?>
 
 <script>
     $(document).ready(function() {
@@ -139,6 +138,22 @@ use App\Core\Request; ?>
 
     function close_make_modal() {
         location.reload();
+    }
+
+    function openOptions() {
+        $('.example-popover').popover({
+            container: 'body'
+        })
+    }
+
+    function openFolderOptionsModal(selected_folder_code, selected_folder_name) {
+        $('#current_folder_code').val(selected_folder_code);
+        $('#rename_folder_input').val(selected_folder_name);
+        $('#folder_options_modal').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
     }
 </script>
 
