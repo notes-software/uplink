@@ -55,10 +55,16 @@ class DriveController
 
         if (Request::hasFile('upload_file')) {
             $file_tmp = $_FILES['upload_file']['tmp_name'];
-            $filename = $curr_folder . "_" . str_replace(array(' ', ',', '-'), '_', $_FILES['upload_file']['name']);
+
+            $file_name = explode('_', str_replace(array('.', ' ', ',', '-'), '_', $_FILES['upload_file']['name']));
+            array_pop($file_name);
+
             $fileSize = $_FILES['upload_file']['size'] / 1000000;
             $file_type = explode('.', $_FILES['upload_file']['name']);
-            $fileType = strtoupper(end($file_type));
+            $file_type_end = end($file_type);
+            $fileType = strtoupper($file_type_end);
+
+            $filename = strtoupper(randChar(4)) . date('Ymdhis') . "." . $file_type_end;
 
             $image_icons_array = array("JPEG", "JPG", "EXIF", "TIFF", "GIF", "BMP", "PNG", "SVG", "ICO", "PPM", "PGM", "PNM");
             if (in_array($fileType, $image_icons_array)) {
@@ -70,7 +76,8 @@ class DriveController
             $folder = uniqid() . '-' . date('Ymdhis');
             $temp_dir = "public/assets/drive/{$user_id}/";
 
-            $this->saveFilesInDb($user_id, $curr_folder, $temp_dir . $filename, $fileSize, $fileType, $previewSize);
+            $folderName = implode('_', $file_name);
+            $this->saveFilesInDb($user_id, $curr_folder, $temp_dir . $filename, $folderName, $fileSize, $fileType, $previewSize);
 
             Request::storeAs($file_tmp, $temp_dir, $_FILES['upload_file']['type'], $filename);
 
@@ -80,7 +87,7 @@ class DriveController
         echo '';
     }
 
-    public function saveFilesInDb($user_id, $folder_id, $path, $fileSize, $fileType, $previewSize)
+    public function saveFilesInDb($user_id, $folder_id, $path, $file_name, $fileSize, $fileType, $previewSize)
     {
         $fileCode = randChar(3) . date('ymdhis');
 
@@ -90,6 +97,7 @@ class DriveController
             "folder_id" => $folder_id,
             "slug" => $path,
             "filetype" => $fileType,
+            "filename" => $file_name,
             "filesize" => $fileSize,
             "iconsize" => $previewSize,
             "created_at" => date('Y-m-d h:i:s'),
@@ -109,8 +117,8 @@ class DriveController
         $prev = previous_folder($folderSelected['id']);
 
         $displayPrev = ($prev['folder_code'] != "")
-            ? '<a href="' . route('/drive') . '">Drive > </a><a href="' . route('/drive/folder', $prev['folder_code']) . '">' . $prev['folder_name'] . ' > </a>'
-            : '<a href="' . route('/drive') . '">Drive ></a> ';
+            ? '<a href="' . route('/drive') . '">Drive / </a><a href="' . route('/drive/folder', $prev['folder_code']) . '">' . $prev['folder_name'] . ' / </a>'
+            : '<a href="' . route('/drive') . '">Drive /</a> ';
 
         $crumbs = $displayPrev . $folderSelected['folder_name'];
 
@@ -167,5 +175,51 @@ class DriveController
         foreach ($sub_folder_list as $sub_folder) {
             $this->deleteFolders($user_id, $sub_folder->id);
         }
+    }
+
+    public function deleteFile()
+    {
+        $user_id = Auth::user('id');
+        $request = Request::validate('/drive');
+        $file = new Filesystem;
+
+        if (Filesystem::exists($request['path'])) {
+            $file->delete($request['path']);
+            App::get('database')->delete("user_files", "id = '$request[id]' AND user_id = '$user_id'");
+            echo 1;
+        }
+    }
+
+    public function renameFile()
+    {
+        $user_id = Auth::user('id');
+        $request = Request::validate('/drive', [
+            "rename_file_input" => "required"
+        ]);
+
+        $form_data = [
+            "filename" => $request['file_name'],
+            "updated_at" => date('Y-m-d h:i:s')
+        ];
+
+        $response = App::get('database')->update("user_files", $form_data, "id = '$request[current_file_id]' AND user_id = '$user_id'");
+
+        echo $response;
+    }
+
+    public function downloadFile()
+    {
+        $user_id = Auth::user('id');
+        $request = Request::validate('/drive');
+        $filePAth = $request['fileSlug'];
+
+        if (file_exists($filePAth)) {
+            echo fileDownloader($filePAth);
+        } else {
+            http_response_code(404);
+            die();
+        }
+
+        // return view('/drive/file_downloader', compact('filetype', 'filename', 'filePAth'));
     }
 }

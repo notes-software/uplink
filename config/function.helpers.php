@@ -48,3 +48,13 @@ function getImageView($filetype, $path)
 
     return $icon;
 }
+
+function fileDownloader($filePAth)
+{
+    $filetype = filetype($filePAth);
+    $filename = basename($filePAth);
+    header("Content-Type: " . $filetype);
+    header("Content-Length: " . filesize($filePAth));
+    header("Content-Disposition: attachment; filename=" . $filename);
+    readfile($filePAth);
+}

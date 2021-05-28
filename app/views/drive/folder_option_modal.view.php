@@ -22,6 +22,7 @@ use App\Core\Request;
                                 <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Rename</a>
                                 <!-- <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Share</a> -->
                                 <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Delete</a>
+                                <a class="nav-link" id="file-pills-close-tab" data-toggle="pill" href="#" role="tab" aria-selected="false" onclick="close_make_modal()">Close</a>
                             </div>
                         </div>
                         <div class="col">
@@ -53,11 +54,6 @@ use App\Core\Request;
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 mt-1" style="flex-direction: row;display: flex;justify-content: flex-end;">
-                            <button type="button" class="btn btn-secondary btn-sm mr-1" onclick="close_make_modal()">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -92,7 +88,7 @@ use App\Core\Request;
             if (data == 1) {
                 alert('folder deleted successfully.');
             } else {
-                alert('error deletinh folder.');
+                alert('error deleting folder.');
             }
         });
     }

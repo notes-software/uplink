@@ -84,8 +84,6 @@ use App\Core\Request; ?>
                     <div class="card-columns">
                         <?php
                         foreach ($files as $file) {
-                            $fileSlug = explode('/', $file->slug);
-                            $fileName = end($fileSlug);
                             $iconSize = "width: " . $file->iconsize . ";";
 
                             if (!checkIfImage($file->filetype)) {
@@ -96,12 +94,18 @@ use App\Core\Request; ?>
                         ?>
 
 
-                            <div class="card" style="border: 1px solid rgb(0 0 0 / 26%);overflow: hidden;<?= $isNotImg ?>">
+                            <div class="card ch-padd-hover" style="border: 1px solid rgb(0 0 0 / 26%);overflow: hidden;<?= $isNotImg ?>">
                                 <img class="card-img-top" style="<?= $iconSize ?>" src="<?= getImageView($file->filetype, $file->slug) ?>" alt="Card image cap">
                                 <div class="card-body">
                                     <p class="card-text card-text-small d-flex flex-column">
-                                        <?= $fileName ?>
-                                        <small class="text-muted"><?= $file->filesize . " MB" ?></small>
+                                        <?= $file->filename ?>
+                                        <small class="text-muted" style="display: flex;flex-direction: row;justify-content: space-between;align-items: center;justify-items: center;">
+                                            <?= $file->filesize . " MB | [{$file->filetype}]" ?>
+
+                                            <span class="d-flex flex-row show-onhover">
+                                                <i class="fas fa-cog show-onhover text-muted" style="font-size: 14px;cursor: pointer;" onclick="fileOption('<?= $file->id ?>', '<?= $file->slug ?>', '<?= $file->filename ?>')"></i>
+                                            </span>
+                                        </small>
                                     </p>
                                 </div>
                             </div>
@@ -119,6 +123,7 @@ use App\Core\Request; ?>
 
 <?php require __DIR__ . '/make_modal.view.php'; ?>
 <?php require __DIR__ . '/folder_option_modal.view.php'; ?>
+<?php require __DIR__ . '/file_option_modal.view.php'; ?>
 
 <script>
     $(document).ready(function() {
@@ -150,6 +155,17 @@ use App\Core\Request; ?>
         $('#current_folder_code').val(selected_folder_code);
         $('#rename_folder_input').val(selected_folder_name);
         $('#folder_options_modal').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function fileOption(id, path, name) {
+        $('#current_file_id').val(id);
+        $('#current_file_slug').val(path);
+        $('#rename_file_input').val(name);
+        $('#file_options_modal').modal({
             show: true,
             backdrop: 'static',
             keyboard: false

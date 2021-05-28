@@ -14,7 +14,10 @@ $router->post('/drive/new_folder', ['DriveController@newFolder', 'auth']);
 $router->post('/drive/uploadFile/{code}', ['DriveController@uploadFile', 'auth']);
 $router->get('/drive/folder/{code}', ['DriveController@folderDetail', 'auth']);
 $router->post('/drive/rename_folder', ['DriveController@renameFolder', 'auth']);
+$router->post('/drive/rename_file', ['DriveController@renameFile', 'auth']);
 $router->post('/drive/delete_folder', ['DriveController@deleteFolder', 'auth']);
+$router->post('/drive/delete_file', ['DriveController@deleteFile', 'auth']);
+$router->post('/drive/download_file', ['DriveController@downloadFile', 'auth']);
 
 // Notes
 $router->get('/notes', ['NotesController@index', 'auth']);
