@@ -20,6 +20,7 @@ $create_user_files = [
 		"folder_id" => "int(11) NOT NULL",
 		"slug" => "text DEFAULT NULL",
 		"filetype" => "text NOT NULL",
+		"filename" => "varchar(200) NOT NULL DEFAULT NULL",
 		"filesize" => "text NOT NULL",
 		"iconsize" => "text NOT NULL",
 		"created_at" => "timestamp NULL DEFAULT NULL",
