@@ -16,8 +16,8 @@ class DriveController
         $pageTitle = "Drive";
         $crumbs = 'Drive';
         $user_id = Auth::user('id');
-        $folders = App::get('database')->selectLoop("*", "user_folder", "user_id = '$user_id' AND parent_folder = '0'");
-        $files = App::get('database')->selectLoop("*", "user_files", "user_id = '$user_id' AND folder_id = '0'");
+        $folders = DB()->selectLoop("*", "user_folder", "user_id = '$user_id' AND parent_folder = '0'")->get();
+        $files = DB()->selectLoop("*", "user_files", "user_id = '$user_id' AND folder_id = '0'")->get();
 
         return view('/drive/index', compact('pageTitle', 'folders', 'files', 'crumbs'));
     }
@@ -28,7 +28,7 @@ class DriveController
         $folderCode = randChar(3) . date('ymdhis');
         $user_id = Auth::user('id');
         $current_folder_code = $request['current_folder'];
-        $curr_folder = App::get('database')->select("*", "user_folder", "user_id = '$user_id' AND folder_code = '$current_folder_code'");
+        $curr_folder = DB()->select("*", "user_folder", "user_id = '$user_id' AND folder_code = '$current_folder_code'")->get();
 
         $data_form = [
             "folder_code" => $folderCode,
@@ -39,7 +39,7 @@ class DriveController
             "updated_at" => date('Y-m-d h:i:s')
         ];
 
-        $response = App::get('database')->insert("user_folder", $data_form);
+        $response = DB()->insert("user_folder", $data_form);
         echo $response;
     }
 
@@ -49,7 +49,7 @@ class DriveController
         if ($code == "nodata") {
             $curr_folder = 0;
         } else {
-            $curr_folder_query = App::get('database')->select("*", "user_folder", "user_id = '$user_id' AND folder_code = '$code'");
+            $curr_folder_query = DB()->select("*", "user_folder", "user_id = '$user_id' AND folder_code = '$code'")->get();
             $curr_folder = $curr_folder_query['id'];
         }
 
@@ -104,7 +104,7 @@ class DriveController
             "updated_at" => date('Y-m-d h:i:s')
         ];
 
-        App::get('database')->insert("user_files", $data_form);
+        DB()->insert("user_files", $data_form);
     }
 
     public function folderDetail($code)
@@ -112,7 +112,7 @@ class DriveController
         $pageTitle = "Folder";
         $folderCode = $code;
         $user_id = Auth::user('id');
-        $folderSelected = App::get('database')->select("*", "user_folder", "user_id = '$user_id' AND folder_code = '$code'");
+        $folderSelected = DB()->select("*", "user_folder", "user_id = '$user_id' AND folder_code = '$code'")->get();
 
         $prev = previous_folder($folderSelected['id']);
 
@@ -122,9 +122,9 @@ class DriveController
 
         $crumbs = $displayPrev . $folderSelected['folder_name'];
 
-        $folders = App::get('database')->selectLoop("*", "user_folder", "user_id = '$user_id' AND parent_folder = '$folderSelected[id]'");
+        $folders = DB()->selectLoop("*", "user_folder", "user_id = '$user_id' AND parent_folder = '$folderSelected[id]'")->get();
 
-        $files = App::get('database')->selectLoop("*", "user_files", "user_id = '$user_id' AND folder_id = '$folderSelected[id]'");
+        $files = DB()->selectLoop("*", "user_files", "user_id = '$user_id' AND folder_id = '$folderSelected[id]'")->get();
 
         return view('/drive/index', compact('pageTitle', 'folders', 'files', 'crumbs', 'folderCode'));
     }
@@ -141,7 +141,7 @@ class DriveController
             "updated_at" => date('Y-m-d h:i:s')
         ];
 
-        $response = App::get('database')->update("user_folder", $form_data, "folder_code = '$request[current_folder_code]' AND user_id = '$user_id'");
+        $response = DB()->update("user_folder", $form_data, "folder_code = '$request[current_folder_code]' AND user_id = '$user_id'");
 
         echo $response;
     }
@@ -151,7 +151,7 @@ class DriveController
         $user_id = Auth::user('id');
         $request = Request::validate('/drive');
 
-        $folder = App::get('database')->select("*", "user_folder", "folder_code = '$request[current_folder_code]' AND user_id = '$user_id'");
+        $folder = DB()->select("*", "user_folder", "folder_code = '$request[current_folder_code]' AND user_id = '$user_id'")->get();
 
         $this->deleteFolders($user_id, $folder['id']);
         echo 1;
@@ -161,19 +161,19 @@ class DriveController
     {
         $file = new Filesystem;
 
-        $users_files = App::get('database')->selectLoop("*", "user_files", "folder_id = '$folder_id' AND user_id = '$user_id'");
+        $users_files = DB()->selectLoop("*", "user_files", "folder_id = '$folder_id' AND user_id = '$user_id'")->get();
         foreach ($users_files as $files) {
-            if (Filesystem::exists($files->slug)) {
-                $file->delete($files->slug);
-                App::get('database')->delete("user_files", "id = '$files->id' AND user_id = '$user_id'");
+            if (Filesystem::exists($files['slug'])) {
+                $file->delete($files['slug']);
+                DB()->delete("user_files", "id = '$files[id]' AND user_id = '$user_id'");
             }
         }
 
-        App::get('database')->delete("user_folder", "id = '$folder_id' AND user_id = '$user_id'");
+        DB()->delete("user_folder", "id = '$folder_id' AND user_id = '$user_id'");
 
-        $sub_folder_list = App::get('database')->selectLoop("*", "user_folder", "parent_folder = '$folder_id' AND user_id = '$user_id'");
+        $sub_folder_list = DB()->selectLoop("*", "user_folder", "parent_folder = '$folder_id' AND user_id = '$user_id'")->get();
         foreach ($sub_folder_list as $sub_folder) {
-            $this->deleteFolders($user_id, $sub_folder->id);
+            $this->deleteFolders($user_id, $sub_folder['id']);
         }
     }
 
@@ -185,7 +185,7 @@ class DriveController
 
         if (Filesystem::exists($request['path'])) {
             $file->delete($request['path']);
-            App::get('database')->delete("user_files", "id = '$request[id]' AND user_id = '$user_id'");
+            DB()->delete("user_files", "id = '$request[id]' AND user_id = '$user_id'");
             echo 1;
         }
     }
@@ -202,7 +202,7 @@ class DriveController
             "updated_at" => date('Y-m-d h:i:s')
         ];
 
-        $response = App::get('database')->update("user_files", $form_data, "id = '$request[current_file_id]' AND user_id = '$user_id'");
+        $response = DB()->update("user_files", $form_data, "id = '$request[current_file_id]' AND user_id = '$user_id'");
 
         echo $response;
     }

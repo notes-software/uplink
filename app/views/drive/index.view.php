@@ -24,7 +24,7 @@ use App\Core\Request; ?>
 
 <div class="row pb-3">
     <div class="col-12">
-        <?= msg('RESPONSE_MSG'); ?>
+        <?= alert_msg(); ?>
     </div>
 
     <div class="col-12">
@@ -48,16 +48,16 @@ use App\Core\Request; ?>
                             <div class="col-sm-3 mb-4 ch-padd-hover" style="overflow: hidden;">
                                 <div class="card">
                                     <div class="card-body d-flex flex-row align-items-center justify-content-between text-muted" style="padding: 14px;">
-                                        <a href="<?= route("/drive/folder", $folder->folder_code) ?>">
+                                        <a href="<?= route("/drive/folder", $folder['folder_code']) ?>">
                                             <div class="d-flex flex-row align-items-center">
 
                                                 <i class="fas fa-folder mr-2"></i>
-                                                <p class="card-text" style="width: 180px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><?= $folder->folder_name ?></p>
+                                                <p class="card-text" style="width: 180px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><?= $folder['folder_name'] ?></p>
 
                                             </div>
                                         </a>
                                         <div>
-                                            <i class="fas fa-ellipsis-v show-onhover" onclick="openFolderOptionsModal('<?= $folder->folder_code ?>', '<?= $folder->folder_name ?>')"></i>
+                                            <i class="fas fa-ellipsis-v show-onhover" onclick="openFolderOptionsModal('<?= $folder['folder_code'] ?>', '<?= $folder['folder_name'] ?>')"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -84,9 +84,9 @@ use App\Core\Request; ?>
                     <div class="card-columns">
                         <?php
                         foreach ($files as $file) {
-                            $iconSize = "width: " . $file->iconsize . ";";
+                            $iconSize = "width: " . $file['iconsize'] . ";";
 
-                            if (!checkIfImage($file->filetype)) {
+                            if (!checkIfImage($file['filetype'])) {
                                 $isNotImg = "display: inline-flex;flex-direction: row;word-break: break-all;";
                             } else {
                                 $isNotImg = "";
@@ -95,15 +95,15 @@ use App\Core\Request; ?>
 
 
                             <div class="card ch-padd-hover" style="border: 1px solid rgb(0 0 0 / 26%);overflow: hidden;<?= $isNotImg ?>">
-                                <img class="card-img-top" style="<?= $iconSize ?>" src="<?= getImageView($file->filetype, $file->slug) ?>" alt="Card image cap">
+                                <img class="card-img-top" style="<?= $iconSize ?>" src="<?= getImageView($file['filetype'], $file['slug']) ?>" alt="Card image cap">
                                 <div class="card-body">
                                     <p class="card-text card-text-small d-flex flex-column">
-                                        <?= $file->filename ?>
+                                        <?= $file['filename'] ?>
                                         <small class="text-muted" style="display: flex;flex-direction: row;justify-content: space-between;align-items: center;justify-items: center;">
-                                            <?= $file->filesize . " MB | [{$file->filetype}]" ?>
+                                            <?= $file['filesize'] . " MB | [{$file['filetype']}]" ?>
 
                                             <span class="d-flex flex-row show-onhover">
-                                                <i class="fas fa-cog show-onhover text-muted" style="font-size: 14px;cursor: pointer;" onclick="fileOption('<?= $file->id ?>', '<?= $file->slug ?>', '<?= $file->filename ?>')"></i>
+                                                <i class="fas fa-cog show-onhover text-muted" style="font-size: 14px;cursor: pointer;" onclick="fileOption('<?= $file['id'] ?>', '<?= $file['slug'] ?>', '<?= $file['filename'] ?>')"></i>
                                             </span>
                                         </small>
                                     </p>

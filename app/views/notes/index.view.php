@@ -4,7 +4,7 @@ use App\Core\App; ?>
 
 <div class="row pb-3">
     <div class="col-12">
-        <?= msg('RESPONSE_MSG'); ?>
+        <?= alert_msg(); ?>
     </div>
 
     <div class="col-12">
