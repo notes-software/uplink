@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Core\App;
 use App\Core\Auth;
 use App\Core\Request;
-use App\Core\Filesystem;
+use App\Core\Filesystem\Filesystem;
 
 class DriveController
 {
@@ -15,11 +15,12 @@ class DriveController
     {
         $pageTitle = "Drive";
         $crumbs = 'Drive';
+        $folderCode = "";
         $user_id = Auth::user('id');
         $folders = DB()->selectLoop("*", "user_folder", "user_id = '$user_id' AND parent_folder = '0'")->get();
         $files = DB()->selectLoop("*", "user_files", "user_id = '$user_id' AND folder_id = '0'")->get();
 
-        return view('/drive/index', compact('pageTitle', 'folders', 'files', 'crumbs'));
+        return view('/drive/index', compact('pageTitle', 'folders', 'files', 'crumbs', 'folderCode'));
     }
 
     public function newFolder()
